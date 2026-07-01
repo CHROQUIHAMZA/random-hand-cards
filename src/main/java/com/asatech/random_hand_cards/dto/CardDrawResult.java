@@ -7,6 +7,6 @@ import java.util.List;
 public record CardDrawResult(
         List<Card> fullDeck,
         List<Card> randomHand,
-        List<Card> sorteHand
+        List<Card> sortedHand
 ) {
 }

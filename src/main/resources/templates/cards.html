@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASA TECH - Jeu de Cartes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans p-4 md:p-8">
+
+<header class="text-center mb-10">
+    <h1 class="text-4xl font-extrabold text-slate-800">Application « Jeu de cartes »</h1>
+
+</header>
+
+<main class="max-w-6xl mx-auto space-y-12">
+
+    <section>
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            1. Main Aléatoire
+            <span class="bg-slate-200 text-slate-700 text-xs px-3 py-1 rounded-full font-bold">10 cartes non triées</span>
+        </h2>
+        <div class="grid grid-cols-5 md:grid-cols-10 gap-4">
+            <div th:each="card : ${randomHand}" class="transition-transform hover:scale-105">
+                <img th:src="@{${card.getImagePath()}}" th:alt="${card.rank()} + ' de ' + ${card.suit()}" class="rounded-lg shadow-md w-full">
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-500">
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            2. Main Triée
+            <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-bold">Triée par Couleur, puis Valeur</span>
+        </h2>
+        <div class="grid grid-cols-5 md:grid-cols-10 gap-4">
+            <div th:each="card : ${sortedHand}" class="transition-transform hover:scale-105">
+                <img th:src="@{${card.getImagePath()}}" th:alt="${card.rank()} + ' de ' + ${card.suit()}" class="rounded-lg shadow-md w-full">
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            3. Paquet Complet
+            <span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full font-bold">52 cartes générées</span>
+        </h2>
+        <div class="grid grid-cols-6 md:grid-cols-12 gap-2">
+            <div th:each="card : ${deck}" class="opacity-80 hover:opacity-100 transition-opacity">
+                <img th:src="@{${card.getImagePath()}}" th:alt="${card.rank()} + ' de ' + ${card.suit()}" class="rounded shadow-sm w-full">
+            </div>
+        </div>
+    </section>
+
+</main>
+
+
+
+</body>
+</html>

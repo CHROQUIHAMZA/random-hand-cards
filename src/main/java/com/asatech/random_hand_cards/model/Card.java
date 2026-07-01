@@ -9,7 +9,7 @@ public record Card(Suit suit, Rank rank) {
 
     public String getImagePath(){
 
-        // Exemple de format généré : "/img/AS_COEUR.png"
-        return "/img" + rank.name() + "_" + suit().name() + ".png";
+        // Exemple de format généré : "/img/cards/AS_COEUR.png"
+        return "/img/cards/" + rank.name() + "_" + suit().name() + ".png";
     }
 }

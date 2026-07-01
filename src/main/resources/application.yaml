@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: random-hand-cards

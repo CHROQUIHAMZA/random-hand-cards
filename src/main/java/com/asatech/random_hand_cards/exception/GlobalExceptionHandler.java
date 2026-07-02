@@ -56,7 +56,8 @@ public class GlobalExceptionHandler {
 
     /**
      * Erreur 500 (Internal Server Error) : Filet de sécurité (Catch-all).
-     * Intercepte tous les bugs techniques inattendus (ex: NullPointerException).
+     * Intercepte toutes les exceptions résiduelles non gérées spécifiquement
+     * par les autres handlers (ex: NullPointerException).
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

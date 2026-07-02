@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFoundException(NoResourceFoundException ex, HttpServletRequest request, Model model) {
+    public String handleNotFoundException(HttpServletRequest request, Model model) {
 
         ApiError apiError = new ApiError(
                 LocalDateTime.now(),
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleGlobalException(Exception ex , HttpServletRequest request,Model model){
+    public String handleGlobalException(HttpServletRequest request,Model model){
         ApiError apiError = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

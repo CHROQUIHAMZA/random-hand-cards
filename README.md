@@ -42,13 +42,13 @@ Ouvrez votre navigateur sur : [http://localhost:8080/random-hand-cards](http://l
 
 Le projet respecte une architecture **MVC (Model-View-Controller)** stricte afin de garantir une séparation claire des responsabilités :
 * **Couche Controller (`CardController`) :** Gère uniquement le routage HTTP, l'injection des modèles de données et la redirection vers les vues.
-* **Couche Service (`CardService`) :** Contient 100 % de la logique métier (création du paquet complet, mélange via `Collections.shuffle`, et algorithme de tri via un `Comparator` personnalisé).
+* **Couche Service (`CardService`) :** Contient 100 % de la logique métier (création du paquet complet, mélange et le tri).
 * **Vues (Thymeleaf + Tailwind CSS) :** Responsables uniquement de l'affichage de l'interface utilisateur, sans embarquer aucune logique métier.
 * **Ressources statiques :** Les images fournies ont été intentionnellement placées dans le sous-dossier `static/img/cards/` afin de maintenir une arborescence propre et d'isoler les assets du domaine métier des éléments d'interface globaux.
 
 ### Justification des dépendances principales
 
-* **Spring Boot (3.4.0) (Web + Thymeleaf) :** Framework retenu pour sa rapidité de mise en place (serveur embarqué, routage, DI) et son intégration native avec Thymeleaf pour le rendu de vues côté serveur, ainsi qu'avec `@ControllerAdvice` pour la gestion centralisée des erreurs.
+* **Spring Boot (3.4.0) (Web + Thymeleaf) :** Framework retenu pour sa rapidité de mise en place (serveur embarqué, routage, Injection de dépendances) et son intégration native avec Thymeleaf pour le rendu de vues côté serveur, ainsi qu'avec `@ControllerAdvice` pour la gestion centralisée des erreurs.
 * **Lombok :** Utilisé uniquement pour l'injection de dépendances (`@RequiredArgsConstructor` sur `CardController`). Les entités du domaine (`Card`, `ApiError`...) restent des `record` Java natifs, sans annotation Lombok.
 
 ### Structure du projet
@@ -87,16 +87,13 @@ L'ordre de déclaration dans l'enum `Suit` (`CARREAU`, `COEUR`, `PIQUE`, `TREFLE
 
 Le même principe s'applique à l'enum `Rank`, dont l'ordre de déclaration (`AS`, `DEUX`, ..., `ROI`) respecte l'ordre naturel des valeurs listées dans le cahier des charges.
 
-### Structures de données (`List` vs `Set`)
-Bien que les 52 cartes soient uniques, l'utilisation d'une `List` a été privilégiée face à un `Set`. Le domaine métier exige un brassage aléatoire (`Collections.shuffle`) et un tirage séquentiel par index (piocher les 10 premières cartes sur le dessus du paquet), des opérations nécessitant une séquence ordonnée.
-
 ---
 
 ##  4. Programmation Défensive et Robustesse
 
 Bien que le point d'entrée web actuel (`GET /random-hand-cards`) ne prenne aucun paramètre d'URL utilisateur, une stricte **programmation défensive** a été appliquée dans la couche `CardService`.
 
-Le Service agit comme une API interne robuste. Si les méthodes internes (`drawHand`, `shuffleDeck`) sont réutilisées à l'avenir avec des paramètres illogiques (ex: demande de 100 cartes sur un paquet de 52, ou liste nulle), le système valide ces entrées et lève proactivement des `IllegalArgumentException`.
+Le Service agit comme une API interne robuste. Si les méthodes internes (`drawHand`, `shuffleDeck`) sont réutilisées à l'avenir avec des paramètres illogiques (ex: demande de 100 cartes sur un paquet de 52, ou liste nulle), le système valide ces entrées et lève proactivement des `Exceptions`.
 
 ---
 

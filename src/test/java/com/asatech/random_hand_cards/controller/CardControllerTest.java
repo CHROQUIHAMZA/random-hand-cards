@@ -108,4 +108,23 @@ public class CardControllerTest {
                 // 3. On vérifie que l'objet ApiError est bien transmis à la page
                 .andExpect(model().attributeExists("apiError"));
     }
+
+
+    /**
+     * Test d'intégration : Vérifie la gestion des erreurs de navigation.
+     * Simule une requête vers une URL inexistante pour s'assurer que l'application
+     * répond élégamment avec une page d'erreur standardisée (404)
+     * plutôt que de laisser le serveur exposer une page d'erreur brute.
+     */
+    @Test
+    void unknownRoute_ShouldReturnErrorView_With404() throws Exception {
+        // 1. Simuler une requête client vers une route inconnue
+        mockMvc.perform(get("/route-qui-nexiste-pas"))
+                // 2. Vérifier que le serveur renvoie bien le code HTTP 404
+                .andExpect(status().isNotFound())
+                // 3. Vérifier que la vue retournée est bien notre page "error"
+                .andExpect(view().name("error"))
+                // 4. Vérifier que notre objet ApiError est bien passé à la vue
+                .andExpect(model().attributeExists("apiError"));
+    }
 }

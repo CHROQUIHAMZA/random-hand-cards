@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
-                "La page que vous recherchez n'existe pas ou a été déplacée.",
+                "La page que vous recherchez n'existe pas.",
                 request.getRequestURI()
         );
 

@@ -36,17 +36,27 @@ Le projet respecte une architecture **MVC (Model-View-Controller)** stricte afin
 * **Vues (Thymeleaf + Tailwind CSS) :** Responsables uniquement de l'affichage de l'interface utilisateur, sans embarquer aucune logique métier.
 * **Ressources statiques :** Les images fournies ont été intentionnellement placées dans le sous-dossier `static/img/cards/` afin de maintenir une arborescence propre et d'isoler les assets du domaine métier des éléments d'interface globaux.
 
+### Justification des dépendances principales
+
+* **Spring Boot (3.4.0) (Web + Thymeleaf) :** Framework retenu pour sa rapidité de mise en place (serveur embarqué, routage, DI) et son intégration native avec Thymeleaf pour le rendu de vues côté serveur, ainsi qu'avec `@ControllerAdvice` pour la gestion centralisée des erreurs.
+* **Lombok :** Utilisé uniquement pour l'injection de dépendances (`@RequiredArgsConstructor` sur `CardController`). Les entités du domaine (`Card`, `ApiError`...) restent des `record` Java natifs, sans annotation Lombok.
+
+
 ---
 
 ## 3. Modélisation des Données
 
 ### L'utilisation des `Record`
-L'entité principale `Card` a été modélisée sous forme de **Record** (Java 14+). Ce choix est justifié par :
+L'entité principale `Card` a été modélisée sous forme de **Record**. Ce choix est justifié par :
 1. **L'immuabilité :** Une carte à jouer (ex: l'As de Cœur) ne change jamais de valeur au cours de son cycle de vie. Le `record` garantit cette propriété nativement (absence de setters).
 2. **L'égalité par valeur :** Le `record` génère automatiquement les méthodes `equals()` et `hashCode()` basées sur le contenu (Rang et Couleur) et non sur l'adresse mémoire. Cela rend les algorithmes de vérification et les tests unitaires mathématiquement fiables.
 
 ### Enumérations (`Enum`)
-Les couleurs (`Suit`) et les valeurs (`Rank`) sont gérées par des énumérations pour garantir un typage fort. L'ordre de déclaration dans l'enum `Suit` (Carreau, Cœur, Pique, Trèfle) définit naturellement l'ordre algorithmique du tri par défaut des couleurs.
+Les couleurs (`Suit`) et les valeurs (`Rank`) sont gérées par des énumérations pour garantir un typage fort.
+
+L'ordre de déclaration dans l'enum `Suit` (`CARREAU`, `COEUR`, `PIQUE`, `TREFLE`) reprend fidèlement l'ordre énoncé dans le cahier des charges ("4 couleurs : Carreau, Cœur, Pique, Trèfle"). Ce choix n'est pas anodin : en Java, l'ordre naturel (`Comparable`) d'un enum correspond à son ordre de déclaration. En s'alignant sur l'ordre du sujet, le tri par défaut des couleurs (`Comparator.comparing(Card::suit)`) reflète directement et sans ambiguïté l'énoncé métier, sans nécessiter de logique de tri personnalisée supplémentaire.
+
+Le même principe s'applique à l'enum `Rank`, dont l'ordre de déclaration (`AS`, `DEUX`, ..., `ROI`) respecte l'ordre naturel des valeurs listées dans le cahier des charges.
 
 ### Structures de données (`List` vs `Set`)
 Bien que les 52 cartes soient uniques, l'utilisation d'une `List` a été privilégiée face à un `Set`. Le domaine métier exige un brassage aléatoire (`Collections.shuffle`) et un tirage séquentiel par index (piocher les 10 premières cartes sur le dessus du paquet), des opérations nécessitant une séquence ordonnée.
@@ -77,5 +87,5 @@ La réponse est ensuite redirigée vers une vue `error.html` générique pour ne
 
 Le projet dispose d'une couverture de test automatisée assurant la fiabilité des flux :
 * **Tests Unitaires (Couche Service) :** Validation de l'algorithme de tri, de la stricte conservation des 52 cartes après brassage (via `containsExactlyInAnyOrderElementsOf` d'AssertJ), et vérification de la programmation défensive.
-* **Tests d'Intégration (Couche Web) :** Utilisation de `@WebMvcTest` et `@MockitoBean` (Spring Boot 3.4.0) pour valider le routage du contrôleur, la présence des attributs dans le modèle Thymeleaf, et le déclenchement du `GlobalExceptionHandler`.
+* **Tests d'Intégration (Couche Web) :** Utilisation de `@WebMvcTest` et `@MockitoBean` pour valider le routage du contrôleur, la présence des attributs dans le modèle Thymeleaf, et le déclenchement du `GlobalExceptionHandler`.
 * **Test d'Intégrité des Ressources :** Vérification itérative garantissant que chaque combinaison possible générée en Java possède bien son fichier image physique `.png` correspondant, évitant les erreurs 404 au runtime.

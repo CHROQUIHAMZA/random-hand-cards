@@ -6,7 +6,17 @@ Ce projet est une application web Spring Boot qui simule la création d'un jeu d
 
 ##  1. Prérequis et Lancement
 
-L'application est conteneurisée dans un "Fat JAR" autonome incluant le serveur web et les ressources statiques. Vous n'avez besoin que de **Java 21** pour l'exécuter.
+L'application est conteneurisée dans un "Fat JAR" autonome incluant le serveur web et les ressources statiques.
+
+**Prérequis :**
+* **Java 21**
+* **Git** (pour cloner le dépôt)
+
+**Cloner le projet :**
+```bash
+git clone https://github.com/CHROQUIHAMZA/random-hand-cards.git
+cd random-hand-cards
+```
 
 **Compiler et packager l'application :**
 ```bash
@@ -41,6 +51,25 @@ Le projet respecte une architecture **MVC (Model-View-Controller)** stricte afin
 * **Spring Boot (3.4.0) (Web + Thymeleaf) :** Framework retenu pour sa rapidité de mise en place (serveur embarqué, routage, DI) et son intégration native avec Thymeleaf pour le rendu de vues côté serveur, ainsi qu'avec `@ControllerAdvice` pour la gestion centralisée des erreurs.
 * **Lombok :** Utilisé uniquement pour l'injection de dépendances (`@RequiredArgsConstructor` sur `CardController`). Les entités du domaine (`Card`, `ApiError`...) restent des `record` Java natifs, sans annotation Lombok.
 
+### Structure du projet
+```
+src/main/java/com/asatech/random_hand_cards/
+├── model/       → Card, Suit, Rank
+├── dto/         → CardDrawResult, ApiError
+├── service/     → CardService (logique métier)
+├── controller/  → CardController
+└── exception/   → GlobalExceptionHandler
+
+src/main/resources/
+├── static/img/cards/  → Images des 52 cartes (.png)
+└── templates/
+    ├── cards.html      → Vue principale (paquet, main aléatoire, main triée)
+    └── error.html      → Vue affichée par le GlobalExceptionHandler
+
+src/test/java/com/asatech/random_hand_cards/
+├── service/     → CardServiceTest, CardImageTest
+└── controller/  → CardControllerTest
+```
 
 ---
 
